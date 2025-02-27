@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grenade Roulette</title>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; }
+        .grenade { width: 150px; margin: 20px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <h1>Grenade Roulette</h1>
+    <p id="playerTurn">Your Turn</p>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/4/4c/M67b.jpg" alt="Grenade" class="grenade">
+    <button id="pullPin">Pull Pin</button>
+    <p id="result"></p>
+    
+    <script>
+        let explosionChance = 0.2; // 20% chance of explosion
+        let isPlayerTurn = true;
+        
+        function aiTurn() {
+            setTimeout(() => {
+                if (Math.random() < explosionChance) {
+                    document.getElementById("result").innerText = "Boom! AI lost! You win!";
+                    document.getElementById("pullPin").disabled = true;
+                } else {
+                    document.getElementById("playerTurn").innerText = "Your Turn";
+                    isPlayerTurn = true;
+                }
+            }, 1000);
+        }
+        
+        document.getElementById("pullPin").addEventListener("click", function() {
+            if (!isPlayerTurn) return;
+            
+            if (Math.random() < explosionChance) {
+                document.getElementById("result").innerText = "Boom! You lost! AI wins!";
+                this.disabled = true;
+            } else {
+                document.getElementById("playerTurn").innerText = "AI's Turn";
+                isPlayerTurn = false;
+                aiTurn();
+            }
+        });
+    </script>
+</body>
+</html>
