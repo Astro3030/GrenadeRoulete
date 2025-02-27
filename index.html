@@ -6,28 +6,41 @@
     <title>Grenade Roulette</title>
     <style>
         body { text-align: center; font-family: Arial, sans-serif; }
-        .grenade { width: 150px; margin: 20px; }
+        .grenade { width: 150px; margin: 20px; transition: transform 0.5s ease-in-out; }
+        .shake { transform: rotate(-10deg) rotate(10deg); }
         .hidden { display: none; }
     </style>
 </head>
 <body>
     <h1>Grenade Roulette</h1>
     <p id="playerTurn">Your Turn</p>
-    <img src="https://upload.wikimedia.org/wikipedia/commons/4/4c/M67b.jpg" alt="Grenade" class="grenade">
+    <img id="grenadeImg" src="https://upload.wikimedia.org/wikipedia/commons/4/4c/M67b.jpg" alt="Grenade" class="grenade">
     <button id="pullPin">Pull Pin</button>
     <p id="result"></p>
     
     <script>
-        let explosionChance = 0.2; // 20% chance of explosion
+        function getRandomExplosionChance() {
+            return Math.random() * 0.5; // Random explosion chance between 0% and 50%
+        }
+
+        let explosionChance = getRandomExplosionChance();
         let isPlayerTurn = true;
+
+        function shakeGrenade() {
+            const grenade = document.getElementById("grenadeImg");
+            grenade.classList.add("shake");
+            setTimeout(() => grenade.classList.remove("shake"), 500);
+        }
         
         function aiTurn() {
             setTimeout(() => {
+                shakeGrenade();
                 if (Math.random() < explosionChance) {
                     document.getElementById("result").innerText = "Boom! AI lost! You win!";
                     document.getElementById("pullPin").disabled = true;
                 } else {
                     document.getElementById("playerTurn").innerText = "Your Turn";
+                    explosionChance = getRandomExplosionChance();
                     isPlayerTurn = true;
                 }
             }, 1000);
@@ -36,11 +49,13 @@
         document.getElementById("pullPin").addEventListener("click", function() {
             if (!isPlayerTurn) return;
             
+            shakeGrenade();
             if (Math.random() < explosionChance) {
                 document.getElementById("result").innerText = "Boom! You lost! AI wins!";
                 this.disabled = true;
             } else {
                 document.getElementById("playerTurn").innerText = "AI's Turn";
+                explosionChance = getRandomExplosionChance();
                 isPlayerTurn = false;
                 aiTurn();
             }
